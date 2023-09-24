@@ -1,0 +1,32 @@
+{
+  "name": "sample-cap-postgresql-nodejs-cap-js-postgres",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@cap-js/postgres": "^1.2.1",
+    "@sap/cds": "^7.2.1",
+    "@sap/cds-dk": "^7.2.0",
+    "@sap/xssec": "^3.3.4",
+    "express": "^4",
+    "passport": "^0.6.0"
+  },
+  "devDependencies": {
+    "@sap/cds-dk": "^7",
+    "sqlite3": "^5"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "build": "npx cds build --production && bash ./pg/pg-build.sh"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "postgres",
+        "impl": "@cap-js/postgres"
+      }
+    }
+  }
+}

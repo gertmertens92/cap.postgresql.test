@@ -1,0 +1,47 @@
+---
+_schema-version: '3.1'
+ID: sample-cap-postgresql-nodejs-cap-js-postgres
+version: 1.0.0
+description: "A simple CAP project."
+parameters:
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm run build
+modules:
+  - name: sample-cap-postgresql-nodejs-cap-js-postgres-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+      ignore: ["node_modules/"]
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires: 
+      - name: bookshop-db
+  - name: sample-cap-postgresql-nodejs-cap-js-postgres-db-deployer
+    type: nodejs
+    path: gen/pg
+    parameters:
+      no-route: true
+      no-start: true
+      disk-quota: 1GB
+      memory: 256MB
+      tasks:
+      - name: deploy-to-postgresql
+        command: npm start
+        disk-quota: 1GB
+        memory: 256MB
+    build-parameters:
+      ignore: ["node_modules/"]
+    requires:
+      - name: bookshop-db
+resources:
+  - name: bookshop-db
+    type: org.cloudfoundry.existing-service
