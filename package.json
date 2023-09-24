@@ -9,9 +9,9 @@
     "@cap-js/postgres": "^1.2.1",
     "@sap/cds": "^7.2.1",
     "@sap/cds-dk": "^7.2.0",
-    "@sap/xssec": "^3.3.4",
     "express": "^4",
-    "passport": "^0.6.0"
+    "passport": "^0",
+    "@sap/xssec": "^3"
   },
   "devDependencies": {
     "@sap/cds-dk": "^7",
@@ -19,14 +19,17 @@
   },
   "scripts": {
     "start": "cds-serve",
-    "build": "npx cds build --production && bash ./pg/pg-build.sh"
+    "deploy": "mbt build --mtar archive && npm run deploy:cf",
+    "build": "npx cds build --production && bash ./pg/pg-build.sh",
+    "deploy:cf": "cf deploy mta_archives/archive.mtar"
   },
   "cds": {
     "requires": {
       "db": {
         "kind": "postgres",
         "impl": "@cap-js/postgres"
-      }
+      },
+      "auth": "xsuaa"
     }
   }
 }

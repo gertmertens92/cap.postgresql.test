@@ -1,4 +1,3 @@
----
 _schema-version: '3.1'
 ID: sample-cap-postgresql-nodejs-cap-js-postgres
 version: 1.0.0
@@ -18,12 +17,13 @@ modules:
       buildpack: nodejs_buildpack
     build-parameters:
       builder: npm-ci
-      ignore: ["node_modules/"]
+      ignore:
+        - "node_modules/"
     provides:
       - name: srv-api # required by consumers of CAP services (e.g. approuter)
         properties:
           srv-url: ${default-url}
-    requires: 
+    requires:
       - name: bookshop-db
   - name: sample-cap-postgresql-nodejs-cap-js-postgres-db-deployer
     type: nodejs
@@ -34,14 +34,25 @@ modules:
       disk-quota: 1GB
       memory: 256MB
       tasks:
-      - name: deploy-to-postgresql
-        command: npm start
-        disk-quota: 1GB
-        memory: 256MB
+        - name: deploy-to-postgresql
+          command: npm start
+          disk-quota: 1GB
+          memory: 256MB
     build-parameters:
-      ignore: ["node_modules/"]
+      ignore:
+        - "node_modules/"
     requires:
       - name: bookshop-db
+      - name: bookshop-uaa
 resources:
   - name: bookshop-db
     type: org.cloudfoundry.existing-service
+  - name: bookshop-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: sample-cap-postgresql-nodejs-cap-js-postgres-uaa
+        tenant-mode: dedicated
